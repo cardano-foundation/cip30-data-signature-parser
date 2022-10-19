@@ -1,7 +1,7 @@
 # cip8-java
 
 ## Introduction
-Implementation in Java CIP-8 processing (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0008)
+Implementation in Java CIP-8 parsing and validation (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0008)
 
 ## Why is it useful?
 If your server logic is in java, then you can use this library to process COSE signature and public key and do the following
