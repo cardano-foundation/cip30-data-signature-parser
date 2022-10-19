@@ -14,3 +14,8 @@ If your server logic is in java, then you can use this library to process COSE s
 
 ## Requirements
 Java 17 LTS
+
+## Building
+```
+mvn clean install
+```
