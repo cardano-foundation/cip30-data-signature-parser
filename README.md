@@ -7,10 +7,10 @@ Implementation in Java CIP-8 processing (https://github.com/cardano-foundation/C
 If your server logic is in java, then you can use this library to process COSE signature and public key and do the following
 - validate correctness
 - extract *original message* as byte[] | TEXT | HEX | BASE64
-- extract *public key* (Ed25519) as byte[] | TEXT | HEX | BASE6
-- extract *signature* (Ed25519) as byte[] | TEXT | HEX | BASE6
+- extract *public key* (Ed25519) as byte[] | HEX | BASE6
+- extract *signature* (Ed25519) as byte[] | HEX | BASE6
 - extract *cardano address* as byte[] | HEX | BASE64
-- extract *cose payload* (payload with cose wrapper) as byte[] | TEXT | HEX | BASE6
+- extract *cose payload* (payload with cose wrapper) as byte[] | HEX | BASE6
 
 ## Requirements
 Java 17 LTS
