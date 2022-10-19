@@ -98,36 +98,44 @@ public class Cip8ParsingResult {
         return cosePayload;
     }
 
+    public Optional<String> getAddress(Format f, Charset c) {
+        return formatterBinaryOnly(publicKey, f, c);
+    }
+
+    public Optional<String> getAddress(Format f) {
+        return getAddress(f, UTF_8);
+    }
+
     public Optional<String> getPublicKey(Format f, Charset c) {
-        return formatter(publicKey, f, c);
-    }
-
-    public Optional<String> getSignature(Format f, Charset c) {
-        return formatter(signature, f, c);
-    }
-
-    public Optional<String> getMessage(Format f, Charset c) {
-        return formatter(message, f, c);
-    }
-
-    public Optional<String> getCosePayload(Format f) {
-        return formatter(cosePayload, f, UTF_8);
+        return formatterBinaryOnly(publicKey, f, c);
     }
 
     public Optional<String> getPublicKey(Format f) {
-        return formatter(publicKey, f, UTF_8);
+        return getPublicKey(f, UTF_8);
+    }
+
+    public Optional<String> getSignature(Format f, Charset c) {
+        return formatterBinaryOnly(signature, f, c);
     }
 
     public Optional<String> getSignature(Format f) {
-        return formatter(signature, f, UTF_8);
+        return getSignature(f, UTF_8);
+    }
+
+    public Optional<String> getMessage(Format f, Charset c) {
+        return formatterWithText(message, f, c);
     }
 
     public Optional<String> getMessage(Format f) {
-        return formatter(message, f, UTF_8);
+        return getMessage(f, UTF_8);
+    }
+
+    public Optional<String> getCosePayload(Format f) {
+        return getCosePayload(f, UTF_8);
     }
 
     public Optional<String> getCosePayload(Format f, Charset c) {
-        return formatter(cosePayload, f, c);
+        return formatterBinaryOnly(cosePayload, f, c);
     }
 
     public static Cip8ParsingResult createInvalid() {
@@ -136,7 +144,7 @@ public class Cip8ParsingResult {
                 .build();
     }
 
-    private Optional<String> formatter(Optional<byte[]> data, Format f, Charset c) {
+    private Optional<String> formatterWithText(Optional<byte[]> data, Format f, Charset c) {
         return data.map(bytes -> {
             if (f == Format.HEX) {
                 return to(bytes);
@@ -152,6 +160,21 @@ public class Cip8ParsingResult {
         });
     }
 
+    private Optional<String> formatterBinaryOnly(Optional<byte[]> data, Format f, Charset c) {
+        return data.map(bytes -> {
+            if (f == Format.HEX) {
+                return to(bytes);
+            }
+            if (f == Format.TEXT) {
+                return new String(bytes, c);
+            }
+            if (f == Format.BASE64) {
+                return Base64.getEncoder().encodeToString(bytes);
+            }
+
+            throw new RuntimeException("invalid format");
+        });
+    }
     @Override
     public String toString() {
         return "Cip8ParsingResult{" +

@@ -31,6 +31,7 @@ class CIP8ParserTest {
         assertEquals("This is a test message", result.getMessage(TEXT).orElseThrow());
 
         assertEquals("2f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4", result.getPublicKey(HEX).orElseThrow());
+        assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX).orElseThrow());
     }
 
 }
