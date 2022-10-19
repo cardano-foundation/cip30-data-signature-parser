@@ -5,7 +5,7 @@ Implementation in Java CIP-8 parsing and validation (https://github.com/cardano-
 
 ## Why is it useful?
 If your server logic is in java, then you can use this library to process COSE signature and public key and do the following
-- validate correctness
+- validate CIP-8 signature correctness
 - extract *original message* as byte[] | TEXT | HEX | BASE64
 - extract *public key* (Ed25519) as byte[] | HEX | BASE6
 - extract *signature* (Ed25519) as byte[] | HEX | BASE6
