@@ -99,7 +99,7 @@ public class Cip8ParsingResult {
     }
 
     public Optional<String> getAddress(Format f, Charset c) {
-        return formatterBinaryOnly(publicKey, f, c);
+        return formatter(publicKey, f, c);
     }
 
     public Optional<String> getAddress(Format f) {
@@ -107,7 +107,7 @@ public class Cip8ParsingResult {
     }
 
     public Optional<String> getPublicKey(Format f, Charset c) {
-        return formatterBinaryOnly(publicKey, f, c);
+        return formatter(publicKey, f, c);
     }
 
     public Optional<String> getPublicKey(Format f) {
@@ -115,7 +115,7 @@ public class Cip8ParsingResult {
     }
 
     public Optional<String> getSignature(Format f, Charset c) {
-        return formatterBinaryOnly(signature, f, c);
+        return formatter(signature, f, c);
     }
 
     public Optional<String> getSignature(Format f) {
@@ -123,7 +123,7 @@ public class Cip8ParsingResult {
     }
 
     public Optional<String> getMessage(Format f, Charset c) {
-        return formatterWithText(message, f, c);
+        return formatter(message, f, c);
     }
 
     public Optional<String> getMessage(Format f) {
@@ -135,7 +135,7 @@ public class Cip8ParsingResult {
     }
 
     public Optional<String> getCosePayload(Format f, Charset c) {
-        return formatterBinaryOnly(cosePayload, f, c);
+        return formatter(cosePayload, f, c);
     }
 
     public static Cip8ParsingResult createInvalid() {
@@ -144,7 +144,7 @@ public class Cip8ParsingResult {
                 .build();
     }
 
-    private Optional<String> formatterWithText(Optional<byte[]> data, Format f, Charset c) {
+    private Optional<String> formatter(Optional<byte[]> data, Format f, Charset c) {
         return data.map(bytes -> {
             if (f == Format.HEX) {
                 return to(bytes);
@@ -160,21 +160,6 @@ public class Cip8ParsingResult {
         });
     }
 
-    private Optional<String> formatterBinaryOnly(Optional<byte[]> data, Format f, Charset c) {
-        return data.map(bytes -> {
-            if (f == Format.HEX) {
-                return to(bytes);
-            }
-            if (f == Format.TEXT) {
-                return new String(bytes, c);
-            }
-            if (f == Format.BASE64) {
-                return Base64.getEncoder().encodeToString(bytes);
-            }
-
-            throw new RuntimeException("invalid format");
-        });
-    }
     @Override
     public String toString() {
         return "Cip8ParsingResult{" +

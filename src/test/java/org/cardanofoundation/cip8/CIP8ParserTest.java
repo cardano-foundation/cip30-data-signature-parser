@@ -4,7 +4,6 @@ import com.bloxbean.cardano.client.address.util.AddressUtil;
 import com.bloxbean.cardano.client.exception.AddressExcepion;
 import org.junit.jupiter.api.Test;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.cardanofoundation.cip8.Format.*;
 import static org.cardanofoundation.cip8.MoreHex.from;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +24,7 @@ class CIP8ParserTest {
 
         assertEquals("stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k", AddressUtil.bytesToAddress(result.getAddress().orElseThrow()));
 
-        assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX, UTF_8).orElseThrow());
+        assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX).orElseThrow());
         assertEquals("5468697320697320612074657374206d657373616765", result.getMessage(HEX).orElseThrow());
         assertEquals("VGhpcyBpcyBhIHRlc3QgbWVzc2FnZQ==", result.getMessage(BASE64).orElseThrow());
         assertEquals("This is a test message", result.getMessage(TEXT).orElseThrow());

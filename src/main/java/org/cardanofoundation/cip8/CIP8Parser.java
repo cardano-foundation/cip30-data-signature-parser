@@ -23,6 +23,8 @@ import static org.cardanofoundation.ext.cose.COSEKey.deserialize;
 
 public final class CIP8Parser {
 
+    // simple logging SLF4J
+
     private static final EdDSAParameterSpec ED_DSA_PARAMETER_SPEC = EdDSANamedCurveTable.getByName(ED_25519);
     private static final long PUBLIC_KEY_INDEX = -2;
 
@@ -43,6 +45,12 @@ public final class CIP8Parser {
     }
 
     public CIP8Parser(String signature, String publicKey) {
+        if (signature == null) {
+            throw new IllegalArgumentException("signature cannot be null");
+        }
+        if (signature.isBlank()) {
+            throw new IllegalArgumentException("signature cannot blank");
+        }
         this.signature = signature;
         this.publicKey = Optional.ofNullable(publicKey);
     }
@@ -56,6 +64,7 @@ public final class CIP8Parser {
             signature.initVerify(publicKey);
             signature.setParameter(ONE_SHOT_MODE);
             signature.update(message);
+
             return signature.verify(signatureBytes);
         } catch (Exception e) {
             return false;
