@@ -20,6 +20,8 @@ class CIP8ParserTest {
 
         assertTrue(result.isValid());
 
+        assertTrue(result.getAddress().isPresent(), "Optional address is included in the signature...");
+
         assertArrayEquals(from("e1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6"), result.getAddress().orElseThrow());
 
         assertEquals("stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k", AddressUtil.bytesToAddress(result.getAddress().orElseThrow()));
@@ -31,6 +33,20 @@ class CIP8ParserTest {
 
         assertEquals("2f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4", result.getPublicKey(HEX).orElseThrow());
         assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX).orElseThrow());
+    }
+
+    @Test
+    void parseWorksWithEmptyAddress() {
+        var sig = "844ca20127676164647265737340a166686173686564f4565468697320697320612074657374206d6573736167655840a6cec002ecec0c7140a029feb9152edb444bbd8a58c6a0a4eceac6a0e30943e53f9ebe029d766a08b4198aaae71d656319fff25780eab816ab0937e6704bb001";
+        var key = "a401010327200621582052b92d51dc638d085f8663103d5509f0da29bbee418d75f1f2dc7025d69c9643";
+
+        var p = new CIP8Parser(sig, key);
+        var result = p.parse();
+
+        assertTrue(result.getAddress().isEmpty(), "address is baked in (serialised in CIP-8).");
+        assertEquals("52b92d51dc638d085f8663103d5509f0da29bbee418d75f1f2dc7025d69c9643", result.getPublicKey(HEX).orElseThrow());
+        assertEquals("846a5369676e6174757265314ca2012767616464726573734040565468697320697320612074657374206d657373616765", result.getCosePayload(HEX).orElseThrow());
+        assertEquals("a6cec002ecec0c7140a029feb9152edb444bbd8a58c6a0a4eceac6a0e30943e53f9ebe029d766a08b4198aaae71d656319fff25780eab816ab0937e6704bb001", result.getSignature(HEX).orElseThrow());
     }
 
 }
