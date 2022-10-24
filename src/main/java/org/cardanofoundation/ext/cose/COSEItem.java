@@ -2,8 +2,8 @@ package org.cardanofoundation.ext.cose;
 
 import co.nstant.in.cbor.CborException;
 import co.nstant.in.cbor.model.DataItem;
-import org.cardanofoundation.ext.cbor.MoreCbor;
 import org.cardanofoundation.ext.cbor.CborRuntimeException;
+import org.cardanofoundation.ext.cbor.MoreCbor;
 
 public interface COSEItem {
 
