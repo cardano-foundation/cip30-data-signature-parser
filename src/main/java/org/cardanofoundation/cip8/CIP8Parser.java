@@ -8,8 +8,13 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.security.MessageDigest;
+import java.util.Objects;
 import java.util.Optional;
 
 import static co.nstant.in.cbor.CborDecoder.decode;
@@ -18,12 +23,14 @@ import static co.nstant.in.cbor.model.MajorType.MAP;
 import static net.i2p.crypto.eddsa.EdDSAEngine.ONE_SHOT_MODE;
 import static net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable.ED_25519;
 import static org.cardanofoundation.cip8.MoreHex.from;
+import static org.cardanofoundation.cip8.ValidationError.CIP8_FORMAT_ERROR;
+import static org.cardanofoundation.cip8.ValidationError.NO_PUBLIC_KEY;
 import static org.cardanofoundation.ext.cbor.MoreCbor.serialize;
 import static org.cardanofoundation.ext.cose.COSEKey.deserialize;
 
 public final class CIP8Parser {
 
-    // simple logging SLF4J
+    private static final Logger logger = LoggerFactory.getLogger(CIP8Parser.class);
 
     private static final EdDSAParameterSpec ED_DSA_PARAMETER_SPEC = EdDSANamedCurveTable.getByName(ED_25519);
     private static final long PUBLIC_KEY_INDEX = -2;
@@ -31,28 +38,23 @@ public final class CIP8Parser {
     private final String signature;
     private final Optional<String> publicKey;
 
-    public CIP8Parser(String signature, Optional<String> publicKey) {
-        if (signature == null) {
-            throw new IllegalArgumentException("signature cannot be null");
-        }
-        this.signature = signature;
-        this.publicKey = publicKey;
-    }
-
+    @ParametersAreNonnullByDefault
     public CIP8Parser(String signature) {
-        this.signature = signature;
-        this.publicKey = Optional.empty();
+       this(signature, Optional.empty());
     }
 
-    public CIP8Parser(String signature, String publicKey) {
-        if (signature == null) {
-            throw new IllegalArgumentException("signature cannot be null");
-        }
+    public CIP8Parser(String signature, @Nullable String publicKey) {
+        this(signature, Optional.ofNullable(publicKey));
+    }
+
+    @ParametersAreNonnullByDefault
+    public CIP8Parser(String signature, Optional<String> publicKey) {
+        Objects.requireNonNull(signature, "signature cannot be null");
         if (signature.isBlank()) {
             throw new IllegalArgumentException("signature cannot blank");
         }
         this.signature = signature;
-        this.publicKey = Optional.ofNullable(publicKey);
+        this.publicKey = publicKey;
     }
 
     private static boolean verifyMessage(final byte[] message,
@@ -83,8 +85,8 @@ public final class CIP8Parser {
             var coseCbor = decode(signatureAsBytes).get(0);
 
             if (coseCbor.getMajorType() != ARRAY) {
-                //log.warn("invalid CIP-8 signature. Structure is not an array.");
-                return Cip8ParsingResult.createInvalid();
+                logger.error("Invalid CIP-8 signature. Structure is not an array.");
+                return Cip8ParsingResult.createInvalid(CIP8_FORMAT_ERROR);
             }
 
             var dataItems = ((Array) coseCbor).getDataItems();
@@ -97,8 +99,8 @@ public final class CIP8Parser {
             var protectedHeaderDecoded = CborDecoder.decode(protectedHeader.getBytes()).get(0);
 
             if (protectedHeaderDecoded.getMajorType() != MAP) {
-                //log.warn("invalid CIP-8 signature. Protected header structure is not a map.");
-                return Cip8ParsingResult.createInvalid();
+                logger.error("Invalid CIP-8 signature. Protected header structure is not a map.");
+                return Cip8ParsingResult.createInvalid(CIP8_FORMAT_ERROR);
             }
 
             var protectedHeaderMap = (Map) protectedHeaderDecoded;
@@ -110,6 +112,11 @@ public final class CIP8Parser {
             signatureArray.add(messageByteString);
 
             var publicKeyBytes = deserialisePublicKey(publicKey, protectedHeaderMap);
+            if (publicKeyBytes == null) {
+                logger.error("No public key found.");
+                return Cip8ParsingResult.createInvalid(NO_PUBLIC_KEY);
+            }
+
             var cosePayload = serialize(signatureArray);
 
             var isVerified = verifyMessage(
@@ -120,7 +127,10 @@ public final class CIP8Parser {
 
             var b = Cip8ParsingResult.Builder.newBuilder();
 
-            b.valid(isVerified);
+            if (isVerified) {
+                b.valid();
+            }
+
             deserialiseAddress(protectedHeaderMap).ifPresent(b::address);
             deserialiseSignedMessage(messageByteString).ifPresent(b::message);
             b.publicKey(publicKeyBytes);
@@ -129,13 +139,16 @@ public final class CIP8Parser {
 
             return b.build();
         } catch (CborException | ClassCastException e) {
-            return Cip8ParsingResult.createInvalid();
+            return Cip8ParsingResult.createInvalid(CIP8_FORMAT_ERROR);
         }
    }
 
-    private static byte[] deserialisePublicKey(Optional<String> key, Map protectedHeaderMap) {
-        return key.map(k -> deserialize(from(k)).otherHeaderAsBytes(PUBLIC_KEY_INDEX)).orElseGet(() -> {
+    private static @Nullable byte[] deserialisePublicKey(Optional<String> publicKey, Map protectedHeaderMap) {
+        return publicKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(PUBLIC_KEY_INDEX)).orElseGet(() -> {
             var publicKeyBS = (ByteString) protectedHeaderMap.get(new UnsignedInteger(4));
+            if (publicKeyBS == null) {
+                return null;
+            }
 
             return publicKeyBS.getBytes();
         });

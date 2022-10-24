@@ -9,7 +9,7 @@ import static org.cardanofoundation.cip8.MoreHex.to;
 
 public class Cip8ParsingResult {
 
-    private boolean valid = false;
+    private Optional<ValidationError> validationError = Optional.empty();
 
     private Optional<byte[]> address = Optional.empty();
     private Optional<byte[]> publicKey = Optional.empty();
@@ -19,7 +19,8 @@ public class Cip8ParsingResult {
 
     public static class Builder {
 
-        private boolean valid;
+        private Optional<ValidationError> validationError = Optional.empty();
+
         private Optional<byte[]> address = Optional.empty();
         private Optional<byte[]> publicKey = Optional.empty();
         private Optional<byte[]> signature = Optional.empty();
@@ -30,32 +31,37 @@ public class Cip8ParsingResult {
             return new Builder();
         }
 
-        public Builder valid(boolean valid){
-            this.valid = valid;
+        public Builder valid() {
+            this.validationError = Optional.empty();
             return Builder.this;
         }
 
-        public Builder address(byte[] address){
+        public Builder validationError(ValidationError error) {
+            this.validationError = Optional.of(error);
+            return Builder.this;
+        }
+
+        public Builder address(byte[] address) {
             this.address = Optional.of(address);
             return Builder.this;
         }
 
-        public Builder publicKey(byte[] publicKey){
+        public Builder publicKey(byte[] publicKey) {
             this.publicKey = Optional.of(publicKey);
             return Builder.this;
         }
 
-        public Builder signature(byte[] signature){
+        public Builder signature(byte[] signature) {
             this.signature = Optional.of(signature);
             return Builder.this;
         }
 
-        public Builder message(byte[] message){
+        public Builder message(byte[] message) {
             this.message = Optional.of(message);
             return Builder.this;
         }
 
-        public Builder cosePayload(byte[] cosePayload){
+        public Builder cosePayload(byte[] cosePayload) {
             this.cosePayload = Optional.of(cosePayload);
             return Builder.this;
         }
@@ -66,7 +72,7 @@ public class Cip8ParsingResult {
     }
 
     private Cip8ParsingResult(Builder builder) {
-        this.valid = builder.valid;
+        this.validationError = builder.validationError;
         this.address = builder.address;
         this.publicKey = builder.publicKey;
         this.signature = builder.signature;
@@ -75,7 +81,11 @@ public class Cip8ParsingResult {
     }
 
     public boolean isValid() {
-        return valid;
+        return validationError.isEmpty();
+    }
+
+    public Optional<ValidationError> getValidationError() {
+        return validationError;
     }
 
     public Optional<byte[]> getAddress() {
@@ -138,9 +148,9 @@ public class Cip8ParsingResult {
         return formatter(cosePayload, f, c);
     }
 
-    public static Cip8ParsingResult createInvalid() {
-        return Cip8ParsingResult.Builder.newBuilder()
-                .valid(false)
+    public static Cip8ParsingResult createInvalid(ValidationError error) {
+        return Builder.newBuilder()
+                .validationError(error)
                 .build();
     }
 
@@ -163,7 +173,8 @@ public class Cip8ParsingResult {
     @Override
     public String toString() {
         return "Cip8ParsingResult{" +
-                "valid=" + valid +
+                "valid=" + validationError.isEmpty() +
+                ", validationError=" + validationError +
                 ", address=" + address +
                 ", publicKey=" + publicKey +
                 ", signature=" + signature +
