@@ -77,6 +77,14 @@ public final class CIP8Parser {
         return verifyCIP8Signature(signature, publicKey);
     }
 
+    public String getSignature() {
+        return signature;
+    }
+
+    public Optional<String> getPublicKey() {
+        return publicKey;
+    }
+
     private static Cip8ParsingResult verifyCIP8Signature(final String signature,
                                                          final Optional<String> publicKey) {
         try {
