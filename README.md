@@ -6,11 +6,6 @@ Implementation in Java CIP-8 parsing and validation (https://github.com/cardano-
 ## Why is it useful?
 If your server logic is in java, then you can use this library to process COSE signature and public key and do the following
 - validate CIP-8 signature correctness
-- extract *original message* as byte[] | TEXT | HEX | BASE64
-- extract *public key* (Ed25519) as byte[] | HEX | BASE6
-- extract *signature* (Ed25519) as byte[] | HEX | BASE6
-- extract *cardano address* as byte[] | HEX | BASE64
-- extract *cose payload* (payload with cose wrapper) as byte[] | HEX | BASE6
 
 ## Requirements
 Java 17 LTS
@@ -19,3 +14,8 @@ Java 17 LTS
 ```
 mvn clean install
 ```
+
+## Design Decisions
+1. CIP Parser is strict, meaning that if CIP signature / key is invalid then after parsing none of the fields are available (null)
+2. We try to minimise dependencies
+3. We depend on Java17 because we assume that library will be used in new projects

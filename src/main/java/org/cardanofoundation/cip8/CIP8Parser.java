@@ -73,6 +73,10 @@ public final class CIP8Parser {
         }
     }
 
+    /**
+     * *
+     * @return
+     */
     public Cip8ParsingResult parse() {
         return verifyCIP8Signature(signature, publicKey);
     }

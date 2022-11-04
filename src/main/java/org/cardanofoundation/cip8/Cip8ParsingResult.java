@@ -104,6 +104,7 @@ public class Cip8ParsingResult {
         return address;
     }
 
+    // TODO document
     public @Nullable byte[] getPublicKey() {
         return publicKey;
     }
@@ -120,44 +121,36 @@ public class Cip8ParsingResult {
         return cosePayload;
     }
 
-    public Optional<String> getAddress(Format f, Charset c) {
-        return formatter(address, f, c);
-    }
-
-    public Optional<String> getAddress(Format f) {
-        return getAddress(f, UTF_8);
-    }
-
     public String getPublicKey(Format f, Charset c) {
-        return formatter(Optional.of(publicKey), f, c).orElseThrow();
+        return formatter(publicKey, f, c);
     }
 
-    public String getPublicKey(Format f) {
+    public @Nullable String getPublicKey(Format f) {
         return getPublicKey(f, UTF_8);
     }
 
-    public String getSignature(Format f, Charset c) {
-        return formatter(Optional.of(signature), f, c).orElseThrow();
+    public @Nullable String getSignature(Format f, Charset c) {
+        return formatter(signature, f, c);
     }
 
-    public String getSignature(Format f) {
+    public @Nullable String getSignature(Format f) {
         return getSignature(f, UTF_8);
     }
 
-    public String getMessage(Format f, Charset c) {
-        return formatter(Optional.of(message), f, c).orElseThrow();
+    public @Nullable String getMessage(Format f, Charset c) {
+        return formatter(message, f, c);
     }
 
-    public String getMessage(Format f) {
+    public @Nullable String getMessage(Format f) {
         return getMessage(f, UTF_8);
     }
 
-    public String getCosePayload(Format f) {
+    public @Nullable String getCosePayload(Format f) {
         return getCosePayload(f, UTF_8);
     }
 
-    public String getCosePayload(Format f, Charset c) {
-        return formatter(Optional.of(cosePayload), f, c).orElseThrow();
+    public @Nullable String getCosePayload(Format f, Charset c) {
+        return formatter(cosePayload, f, c);
     }
 
     public static Cip8ParsingResult createInvalid(ValidationError error) {
@@ -166,20 +159,22 @@ public class Cip8ParsingResult {
                 .build();
     }
 
-    private Optional<String> formatter(Optional<byte[]> data, Format f, Charset c) {
-        return data.map(bytes -> {
-            if (f == Format.HEX) {
-                return to(bytes);
-            }
-            if (f == Format.TEXT) {
-                return new String(bytes, c);
-            }
-            if (f == Format.BASE64) {
-                return Base64.getEncoder().encodeToString(bytes);
-            }
+    private String formatter(byte[] bytes, Format f, Charset c) {
+        if (bytes == null) {
+            return null;
+        }
+        if (f == null) {
+            throw new IllegalArgumentException("format must be defined");
+        }
+        if (c == null) {
+            throw new IllegalArgumentException("charset must be defined");
+        }
 
-            throw new RuntimeException("Format not supported!");
-        });
+        return switch (f) {
+            case HEX -> to(bytes);
+            case TEXT -> new String(bytes, c);
+            case BASE64 -> Base64.getEncoder().encodeToString(bytes);
+        };
     }
 
     @Override
