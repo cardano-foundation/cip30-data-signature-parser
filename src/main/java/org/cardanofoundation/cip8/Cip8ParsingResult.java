@@ -26,7 +26,7 @@ public class Cip8ParsingResult {
 
     public static class Builder {
 
-        private Optional<ValidationError> validationError = Optional.empty();
+        private Optional<ValidationError> validationError = Optional.of(ValidationError.UNKNOWN);
 
         private Optional<byte[]> address = Optional.empty();
         private byte[] publicKey;
