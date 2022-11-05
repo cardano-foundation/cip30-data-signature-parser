@@ -16,7 +16,7 @@ public class Cip8ParsingResult {
 
     private static final Logger logger = LoggerFactory.getLogger(CIP8Parser.class);
 
-    private Optional<ValidationError> validationError = Optional.empty();
+    private Optional<ValidationError> validationError = Optional.of(ValidationError.UNKNOWN);
 
     private Optional<byte[]> address = Optional.empty();
     private byte[] publicKey;
