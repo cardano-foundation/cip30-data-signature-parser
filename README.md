@@ -50,4 +50,5 @@ message: This is a test message
 - library partially implements CIP-8 specification
 - to keep dependencies minimal actual Cardano address is stored as byte array (you have to use other libraries, e.g. bloxbean to turn it into hex or bech32 format)
 - parser is strict, meaning it won't be possible to extract / get various fields if a CIP-8 signature is invalid
+- even though CIP-8 specification allows for signing with multiple keys this library supports only scenario where signing was done with one key (COSESign1)
 
