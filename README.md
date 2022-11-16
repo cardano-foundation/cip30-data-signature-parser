@@ -11,7 +11,7 @@ Partial implementation in Java CIP-8 parsing and validation (https://github.com/
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
 
 ## Requirements
-Java 17 LTS
+Java 17 LTS or greather
 
 ## Building
 ```
