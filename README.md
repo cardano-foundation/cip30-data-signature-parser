@@ -1,7 +1,6 @@
 # cip8-java
 
-[![Java CI with Maven](https://github.com/cardano-foundation/cip8-java/actions/workflows/build.yml/badge.svg)](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml)
-
+[![Java CI with Maven](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml/badge.svg)](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml)
 
 ## Introduction
 Partial implementation in Java CIP-8 parsing and validation (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0008). This library is useful in situation where your project on the server is JVM based and you need to parse / validate CIP-8 signature and extract information encoded in it. In particular this library allows you to get / validate:
