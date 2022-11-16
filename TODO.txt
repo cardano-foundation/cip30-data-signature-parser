@@ -1,2 +1,0 @@
-1. unit test for somehow CIP-8 signed null as per specification
-2.
