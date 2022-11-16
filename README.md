@@ -1,4 +1,4 @@
-# cip8-java
+# Java CIP-8 / CIP-30 parser and validator
 
 [![Java CI with Maven](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml/badge.svg)](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml)
 
