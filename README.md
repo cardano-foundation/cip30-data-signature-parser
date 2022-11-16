@@ -34,7 +34,7 @@ mvn clean package
         System.out.println("message: " + result.getMessage(TEXT));
 ```
 produces
-```out
+```
 is valid?: true
 address: stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k
 message: This is a test message
