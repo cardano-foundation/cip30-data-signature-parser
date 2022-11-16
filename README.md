@@ -3,12 +3,17 @@
 [![Java CI with Maven](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml/badge.svg)](https://github.com/cardano-foundation/cip8-java/actions/workflows/maven.yml)
 
 ## Introduction
-Partial implementation in Java CIP-8 parsing and validation (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0008). This library is useful in situation where your project on the server is JVM based and you need to parse / validate CIP-8 signature and extract information encoded in it. In particular this library allows you to get / validate:
+Partial implementation in Java CIP-8 parsing and validation (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0008). This library is useful in situation where your project is JVM based and you need to parse / validate CIP-8 signature and extract information encoded in it.
+
+
+## Features
+In particular this library allows you to get / validate:
 - validate CIP-8 signed envelopes using either embedded public key or explicitly supplied
 - get message inside of the envolope
 - get optionally stored Cardano address
 - get ED 25519 public key and ED 25519 signature encoded in it
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
+- compatible with Sundae Swap's governance system (ED 25519 public key and ED 25519 signature as well as COSE payload) 
 
 ## Requirements
 Java 17 LTS or greather
