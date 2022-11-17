@@ -1,8 +1,10 @@
 # Terms
 
-- COSE Signature - signed COSE envelope containing message, optional cardano address and public key
+- DataSignature - consists of COSE_Sign1 and COSE_Key
 
-- COSE public key - this is public key wrapped in COSE map, in typical scenarios COSE Signature contains public key
+- COSE_Sign1 - signed COSE envelope containing message, optional cardano address and public key
+
+- COSE_Key - a public key - this is public key wrapped in COSE map, in typical scenarios COSE Signature contains public key
  but in some cases one can explicitly pass COSE public key (e.g. when wallet doesn't store COSE public key)
 
   Example, given the following COSE public key: 'a40101032720062158202f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4'
