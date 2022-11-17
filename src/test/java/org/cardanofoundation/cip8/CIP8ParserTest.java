@@ -51,10 +51,12 @@ class CIP8ParserTest {
         var p = new CIP8Parser(sig, key);
         var result = p.parse();
 
+        assertTrue(result.isValid());
         assertTrue(result.getAddress().isEmpty(), "address is NOT baked in (serialised in CIP-8).");
-
         assertEquals("This is a test message", result.getMessage(TEXT));
+
         assertEquals("52b92d51dc638d085f8663103d5509f0da29bbee418d75f1f2dc7025d69c9643", result.getPublicKey(HEX));
+
         assertEquals("846a5369676e6174757265314ca2012767616464726573734040565468697320697320612074657374206d657373616765", result.getCosePayload(HEX));
         assertEquals("a6cec002ecec0c7140a029feb9152edb444bbd8a58c6a0a4eceac6a0e30943e53f9ebe029d766a08b4198aaae71d656319fff25780eab816ab0937e6704bb001", result.getSignature(HEX));
     }
