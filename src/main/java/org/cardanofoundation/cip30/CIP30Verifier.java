@@ -80,7 +80,6 @@ public final class CIP30Verifier {
      * @param coseSign1 - hex-encoded CBOR bytes of the COSE_Sign1P 8.
      * @param coseKey - Optional hex-encoded CBOR bytes of the COSE_Key
      */
-    @ParametersAreNonnullByDefault
     public CIP30Verifier(String coseSign1, Optional<String> coseKey) {
         Objects.requireNonNull(coseSign1, "signature cannot be null");
         if (coseSign1.isBlank()) {
