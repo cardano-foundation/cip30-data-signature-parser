@@ -1,4 +1,4 @@
-package org.cardanofoundation.cip8;
+package org.cardanofoundation.cip30;
 
 import java.util.HexFormat;
 
