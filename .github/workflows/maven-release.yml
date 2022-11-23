@@ -14,14 +14,14 @@ jobs:
       - name: Build and Test
         uses: qcastel/github-actions-maven-cmd@master
         env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
+          JAVA_HOME: "usr/lib/jvm/java-17-openjdk"
         with:
           maven-args: "clean install"
 
       - name: Release
         uses: qcastel/github-actions-maven-release@v1.12.31
         env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
+          JAVA_HOME: "/usr/lib/jvm/java-17-openjdk/"
         with:
           git-release-bot-name: "release-bot"
           git-release-bot-email: "release-bot@cardanofoundation.org"
