@@ -1,9 +1,10 @@
-name: Publish released package to the Maven Central Repository
+name: Publish To Maven
 
 on:
   release:
     types: [created]
 
+jobs:
   publish:
     runs-on: ubuntu-latest
 
