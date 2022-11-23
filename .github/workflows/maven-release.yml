@@ -1,0 +1,33 @@
+name: Release version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v3
+
+      - name: Build and Test
+        uses: qcastel/github-actions-maven-cmd@master
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
+        with:
+          maven-args: "clean install"
+
+      - name: Release
+        uses: qcastel/github-actions-maven-release@v1.12.31
+        with:
+          git-release-bot-name: "release-bot"
+          git-release-bot-email: "release-bot@cardanofoundation.org"
+
+          maven-args: "-Dmaven.javadoc.skip=true -DskipTests -DskipITs -Ddockerfile.skip -DdockerCompose.skip -Dmaven.deploy.skip=true"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+#         For patch version increment
+          version-patch: true
+
+        gpg-enabled: "false"
