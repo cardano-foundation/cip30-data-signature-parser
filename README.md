@@ -11,7 +11,7 @@ This library is useful in situation where your project is JVM based and you need
 ## Features
 In particular this library allows you to get / validate:
 - validate CIP-30 data signed envelop (DataSignature) using either embedded public key or explicitly supplied key (CIP-30 data signature should contain public key)
-- get message from the envelope
+- get message from the data signature envelope
 - get stored Cardano address
 - get ED 25519 public key and ED 25519 signature encoded in it
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
