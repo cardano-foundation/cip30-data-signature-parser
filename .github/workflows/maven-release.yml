@@ -21,8 +21,8 @@ jobs:
         env:
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk/
         with:
-          git-release-bot-name: "release-bot"
-          git-release-bot-email: "release-bot@cardanofoundation.org"
+#          git-release-bot-name: "release-bot"
+#          git-release-bot-email: "release-bot@cardanofoundation.org"
 
           maven-args: "-Dmaven.javadoc.skip=true -DskipTests -DskipITs -Ddockerfile.skip -DdockerCompose.skip -Dmaven.deploy.skip=true"
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -30,4 +30,4 @@ jobs:
           #For patch version increment
           version-patch: true
 
-          gpg-enabled: "false"
+          gpg-enabled: false
