@@ -1,15 +1,14 @@
 name: Publish To Maven
 
-#on:
-#  release:
-#    types: [published]
-
 on:
+  release:
+    types: [published]
   push:
-    branches: [ main ]
-
+    branches:
+      - main
 jobs:
   publish:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
 
     steps:
@@ -22,13 +21,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           server-id: ossrh
-          server-username: ${{ secrets.OSSRH_USERNAME }}
-          server-password: ${{ secrets.OSSRH_TOKEN }}
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish package
-        run: mvn -B clean deploy -Pci-cd
+        run: mvn clean deploy --batch-mode -DskipTests -Pci-cd
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
