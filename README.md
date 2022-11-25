@@ -33,10 +33,10 @@ mvn clean package
 
 ## Dependency
 ```xml
-<dependecy>
+<dependency>
     <groupId>org.cardanofoundation</groupId>
     <artifactId>cip30-data-signature-parser</artifactId>
-    <version>0.0.6</dependency>
+    <version>0.0.6</version>
 </dependency>
 ```
 
