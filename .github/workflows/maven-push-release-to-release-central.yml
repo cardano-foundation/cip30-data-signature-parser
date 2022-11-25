@@ -27,7 +27,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish package
-        run: mvn clean deploy --batch-mode -DskipTests -Pci-cd
+        run: "mvn clean deploy --batch-mode -DskipTests -Pci-cd"
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
