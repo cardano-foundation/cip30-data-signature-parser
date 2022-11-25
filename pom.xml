@@ -4,6 +4,9 @@
 
     <groupId>org.cardanofoundation</groupId>
     <artifactId>cip30-data-signature-parser</artifactId>
+    <name>CIP 30 Data Signature Parser and Validator</name>
+    <url>https://github.com/cardano-foundation/cip30-data-signature-parser</url>
+    <description>Java implementation of Cardano's CIP-30 DataSignature parsing and validation.</description>
     <version>0.0.6-SNAPSHOT</version>
 
     <properties>
