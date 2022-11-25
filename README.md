@@ -12,7 +12,6 @@
 Implementation in Java of CIP-30 Data Signature Parser and Validator (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0030).
 This library is useful in situation where your project is JVM based and you need to parse / validate CIP-30 data signature and extract information encoded in it.
 
-
 ## Features
 In particular this library allows you to get / validate:
 - validate CIP-30 data signed envelop (DataSignature) using either embedded public key or explicitly supplied key (CIP-30 data signature should contain public key)
@@ -21,6 +20,10 @@ In particular this library allows you to get / validate:
 - get ED 25519 public key and ED 25519 signature encoded in it
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
 - library is compatible with Sundae Swap's governance system (ED 25519 public key and ED 25519 signature as well as COSE payload) 
+
+## Terms Glossary
+
+[GLOSSARY.md](GLOSSARY.md)
 
 ## Requirements
 Java 17 LTS or greater
