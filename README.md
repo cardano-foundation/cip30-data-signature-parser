@@ -1,7 +1,10 @@
 # Java CIP-30 Data Signature Parser and Validator
 
 [![Java CI with Maven](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/maven-build.yml/badge.svg)](https://github.com/cardano-foundationcip30-data-signature-parser/actions/workflows/maven-build.yml)
+[![Maven Version](https://img.shields.io/maven-central/v/org.cardanofoundation.cip30-data-signature-parser/cip30-data-signature-parser)](https://search.maven.org/search?q=org.cardanofoundation.cip30-data-signature-parser)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/org.cardanofoundation/cip30-data-signature-parser/cip30-data-signature-parser.svg)](https://s01.oss.sonatype.org/content/groups/staging/org/cardanofoundation/cip30-data-signature-parser/)
 [![License](https://img.shields.io:/github/license/cardano-foundation/cip30-data-signature-parser?color=blue&label=license)](https://github.com/cardano-foundation/cip30-data-signature-parser/blob/master/LICENSE)
+![Discord Shield](https://discordapp.com/api/guilds/1023884278158860347/widget.png?style=shield)
 
 ## Introduction
 Implementation in Java of CIP-30 Data Signature Parser and Validator (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0030).
