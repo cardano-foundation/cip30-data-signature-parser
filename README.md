@@ -27,7 +27,7 @@ Java 17 LTS or greater
 
 ## Building
 ```
-https://github.com/cardano-foundation/cip8-java
+git clone https://github.com/cardano-foundation/cip30-data-signature-parser
 mvn clean package
 ```
 
