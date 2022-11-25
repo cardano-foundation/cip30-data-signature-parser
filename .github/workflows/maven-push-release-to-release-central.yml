@@ -1,8 +1,12 @@
 name: Publish To Maven
 
+#on:
+#  release:
+#    types: [published]
+
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ main ]
 
 jobs:
   publish:
@@ -24,7 +28,7 @@ jobs:
           gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Publish package
-        run: mvn --batch-mode deploy
+        run: mvn -B clean deploy -Pci-cd
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
