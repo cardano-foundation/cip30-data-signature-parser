@@ -2,9 +2,9 @@
 
 [![Java CI with Maven](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/maven-build.yml/badge.svg)](https://github.com/cardano-foundationcip30-data-signature-parser/actions/workflows/maven-build.yml)
 ![Maven Central](https://img.shields.io/maven-central/v/org.cardanofoundation/cip30-data-signature-parser)
-[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/org.cardanofoundation/cip30-data-signature-parser?server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/content/groups/staging/org/cardanofoundation/cip30-data-signature-parser/)
 [![License](https://img.shields.io:/github/license/cardano-foundation/cip30-data-signature-parser?color=blue&label=license)](https://github.com/cardano-foundation/cip30-data-signature-parser/blob/master/LICENSE)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/cardano-foundation/cip30-data-signature-parser)
+[![javadoc](https://javadoc.io/badge2/org.cardanofoundation/cip30-data-signature-parser/javadoc.svg)](https://javadoc.io/doc/org.cardanofoundation/cip30-data-signature-parser)
 <br>
 [![Discord](https://dcbadge.vercel.app/api/server/Pgrndv3A)](https://discord.gg/Pgrndv3A)
 
