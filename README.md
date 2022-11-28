@@ -20,7 +20,7 @@ In particular this library allows you to get / validate:
 - get stored Cardano address
 - get ED 25519 public key and ED 25519 signature encoded in it
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
-- library is compatible with Sundae Swap's governance system (ED 25519 public key and ED 25519 signature as well as COSE payload) 
+- library is fully compatible with Sundae Swap's governance system, i.e. makes it easy to extract the following fields: (ED 25519 public key and ED 25519 signature as well as COSE payload) 
 
 ## Terms Glossary
 
