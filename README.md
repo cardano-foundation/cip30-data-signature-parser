@@ -23,9 +23,11 @@ In particular this library allows you to get / validate:
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
 - library is fully compatible with Sundae Swap's governance system, i.e. makes it easy to extract the following fields: (ED 25519 public key and ED 25519 signature as well as COSE payload) 
 
-## Terms Glossary
+## External
 
-[GLOSSARY.md](GLOSSARY.md)
+- [GLOSSARY.md](GLOSSARY.md)
+- [CODE-OF-CONDUCT.md](CODE-OF-CONDUCT.md)
+
 
 ## Requirements
 Java 17 LTS or greater
