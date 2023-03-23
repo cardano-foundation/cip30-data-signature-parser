@@ -1,7 +1,7 @@
 # Java CIP-30 Data Signature Parser and Validator
 
 
-[![Build](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/maven-build.yml/badge.svg)](https://github.com/cardano-foundationcip30-data-signature-parser/actions/workflows/maven-build.yml)
+[![Build](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/maven-build.yml/badge.svg)](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/maven-build.yml)
 [![CodeQL](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/codeql.yml/badge.svg)](https://github.com/cardano-foundation/cip30-data-signature-parser/actions/workflows/codeql.yml)
 ![Maven Central](https://img.shields.io/maven-central/v/org.cardanofoundation/cip30-data-signature-parser)
 [![License](https://img.shields.io:/github/license/cardano-foundation/cip30-data-signature-parser?label=license)](https://github.com/cardano-foundation/cip30-data-signature-parser/blob/master/LICENSE)
