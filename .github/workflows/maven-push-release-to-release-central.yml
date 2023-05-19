@@ -23,6 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Normalize private key line ending
+        id: normalization
+        run: |
+          echo "SANITIZED_MAVEN_GPG_PRIVATE_KEY=$(echo ${MAVEN_GPG_PRIVATE_KEY} | tr -d '\r')" >> $GITHUB_OUTPUT
+
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3.10.0
         with:
@@ -31,7 +36,7 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_PRIVATE_KEY }}
+          gpg-private-key: ${{ steps.normalization.outputs.SANITIZED_MAVEN_GPG_PRIVATE_KEY }}
         env:
           GPG_PASSPHRASE: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
 
