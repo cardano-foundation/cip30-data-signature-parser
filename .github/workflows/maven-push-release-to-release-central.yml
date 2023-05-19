@@ -3,6 +3,7 @@ name: Publish To Maven
 on:
   release:
     types: [published]
+  workflow_dispatch:
 #  push:
 #    branches:
 #      - main
