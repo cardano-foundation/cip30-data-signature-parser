@@ -31,10 +31,9 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
-          gpg-passphrase: GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_PRIVATE_KEY }}
         env:
-          GPG_PASSPHRASE: ${{ env.MAVEN_GPG_PASSPHRASE }}
+          GPG_PASSPHRASE: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
 
       - name: Publish package
         run: "mvn clean deploy --batch-mode -DskipTests -Pci-cd"
