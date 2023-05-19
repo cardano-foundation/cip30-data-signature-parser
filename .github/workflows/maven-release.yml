@@ -26,7 +26,7 @@ jobs:
           git-release-bot-email: "release-bot@cardanofoundation.org"
 
           maven-args: "-Dmaven.javadoc.skip=true -DskipTests -DskipITs -Ddockerfile.skip -DdockerCompose.skip -Dmaven.deploy.skip=true"
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.MAVEN_CENTRAL_SSH_PRIVATE_KEY }}
 
           #version-major: true
           #version-minor: true
@@ -34,6 +34,6 @@ jobs:
           version-patch: true
 
           gpg-enabled: "false"
-          gpg-key-id: ${{ secrets.GPG_KEY_ID }}
-          gpg-key: ${{ secrets.GPG_KEY_BASE64 }}
-          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          gpg-key-id: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}
+          gpg-key: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_BASE64 }}
+          gpg-passphrase: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
