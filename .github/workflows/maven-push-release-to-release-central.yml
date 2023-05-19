@@ -26,10 +26,10 @@ jobs:
       - name: Normalize secrets' line ending
         id: normalized-secrets
         run: |
-          echo "SANITIZED_MAVEN_GPG_PASSPHRASE=$(echo -n ${MAVEN_GPG_PASSPHRASE} | tr '\n' ',' | sed -e 's#,#\\n#g') >> GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_GPG_PRIVATE_KEY=$(echo -n ${MAVEN_GPG_PRIVATE_KEY} | tr '\n' ',' | sed -e 's#,#\\n#g') >> GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_USERNAME=$(echo -n ${MAVEN_USERNAME} | tr '\n' ',' | sed -e 's#,#\\n#g') >> GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_PASSWORD=$(echo -n ${MAVEN_PASSWORD} | tr '\n' ',' | sed -e 's#,#\\n#g') >> GITHUB_OUTPUT
+          echo "SANITIZED_MAVEN_GPG_PASSPHRASE=$(echo -n ${MAVEN_GPG_PASSPHRASE} | tr '\n' ',' | sed -e 's#,#\\n#g')" >> GITHUB_OUTPUT
+          echo "SANITIZED_MAVEN_GPG_PRIVATE_KEY=$(echo -n ${MAVEN_GPG_PRIVATE_KEY} | tr '\n' ',' | sed -e 's#,#\\n#g')" >> GITHUB_OUTPUT
+          echo "SANITIZED_MAVEN_USERNAME=$(echo -n ${MAVEN_USERNAME} | tr '\n' ',' | sed -e 's#,#\\n#g')" >> GITHUB_OUTPUT
+          echo "SANITIZED_MAVEN_PASSWORD=$(echo -n ${MAVEN_PASSWORD} | tr '\n' ',' | sed -e 's#,#\\n#g')" >> GITHUB_OUTPUT
 
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3.10.0
