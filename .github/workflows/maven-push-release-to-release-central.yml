@@ -23,29 +23,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Normalize secrets' line ending
-        id: normalization
-        run: |
-          echo "SANITIZED_MAVEN_GPG_PASSPHRASE=$(echo ${MAVEN_GPG_PASSPHRASE} | tr -d '\r' )" >> $GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_GPG_PRIVATE_KEY=$(echo -n ${MAVEN_GPG_PRIVATE_KEY} | tr -d '\r')" >> $GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_USERNAME=$(echo -n ${MAVEN_USERNAME} | tr -d '\r')" >> $GITHUB_OUTPUT
-          echo "SANITIZED_MAVEN_PASSWORD=$(echo -n ${MAVEN_PASSWORD} | tr -d '\r')" >> $GITHUB_OUTPUT
-
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3.10.0
         with:
           java-version: '17'
           distribution: 'temurin'
           server-id: ossrh
-          server-username: SANITIZED_MAVEN_USERNAME
-          server-password: SANITIZED_MAVEN_PASSWORD
-          gpg-private-key: SANITIZED_MAVEN_GPG_PRIVATE_KEY
-          gpg-passphrase: SANITIZED_MAVEN_GPG_PASSPHRASE
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_CENTRAL_GPG_PASSPHRASE }}
+          gpg-passphrase: GPG_PASSPHRASE
         env:
-          SANITIZED_MAVEN_USERNAME: ${{ steps.normalization.outputs.SANITIZED_MAVEN_USERNAME }}
-          SANITIZED_MAVEN_PASSWORD: ${{ steps.normalization.outputs.SANITIZED_MAVEN_PASSWORD }}
-          SANITIZED_MAVEN_GPG_PRIVATE_KEY: ${{ steps.normalization.outputs.SANITIZED_MAVEN_GPG_PRIVATE_KEY }}
-          SANITIZED_MAVEN_GPG_PASSPHRASE: ${{ steps.normalization.outputs.SANITIZED_MAVEN_GPG_PASSPHRASE }}
+          GPG_PASSPHRASE: ${{ env.MAVEN_GPG_PASSPHRASE }}
 
       - name: Publish package
         run: "mvn clean deploy --batch-mode -DskipTests -Pci-cd"
