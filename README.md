@@ -7,6 +7,7 @@
 [![License](https://img.shields.io:/github/license/cardano-foundation/cip30-data-signature-parser?label=license)](https://github.com/cardano-foundation/cip30-data-signature-parser/blob/master/LICENSE)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/cardano-foundation/cip30-data-signature-parser)
 [![javadoc](https://javadoc.io/badge2/org.cardanofoundation/cip30-data-signature-parser/javadoc.svg)](https://javadoc.io/doc/org.cardanofoundation/cip30-data-signature-parser)
+![Discord](https://img.shields.io/discord/1022471509173882950)
 
 ## Introduction
 Implementation in Java of CIP-30 Data Signature Parser and Validator (https://github.com/cardano-foundation/CIPs/tree/master/CIP-0030).
