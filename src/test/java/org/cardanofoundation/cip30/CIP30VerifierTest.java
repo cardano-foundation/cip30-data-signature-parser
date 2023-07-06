@@ -139,4 +139,17 @@ class CIP30VerifierTest {
         assertFalse(result.isValid(), "signature is invalid and should fail to validate");
     }
 
+    @Test
+    void publicKeysMismatch() {
+        var sig = "84582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6a166686173686564f4565468697320697320612074657374206d657373616765584042e2bfc4e1929769a0501b884f66794ae3485860f42c01b70fac37f75e40af074c6b2a61b04c6cf8a493c0dced1455b4f1129dbf653ad9801c52ce49ff6d5a0e";
+        //var key = "c4821499cef96eda9c00cdd0bfbcd2abf7d09436ad424ac7288653a8b4252014";
+        var key = "a4010103272006215820a5f73966e73d0bb9eadc75c5857eafd054a0202d716ac6dde00303ee9c0019e3";
+
+        var p = new CIP30Verifier(sig, key);
+
+        var result = p.verify();
+
+        assertFalse(result.isValid(), "ED 25519 public key within signature doesn't match with passed in key");
+    }
+
 }
