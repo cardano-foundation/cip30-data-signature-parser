@@ -1,5 +1,8 @@
 package org.cardanofoundation.cip30;
 
+import com.bloxbean.cardano.client.address.util.AddressUtil;
+import com.bloxbean.cardano.client.exception.AddressExcepion;
+import com.bloxbean.cardano.client.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.cardanofoundation.cip30.MoreHex.to;
 
 /**
  * The Cip30VerificationResult contains validation information after parsing / verifying.
@@ -161,6 +163,20 @@ public class Cip30VerificationResult {
         return address;
     }
 
+    public Optional<String> getAddress(AddressFormat format) {
+        return switch (format) {
+            case HEX -> address.map(HexUtil::encodeHexString);
+            case TEXT -> address.flatMap(addr -> {
+                try {
+                    return Optional.of(AddressUtil.bytesToAddress(addr));
+                } catch (AddressExcepion e) {
+                    logger.error("Error converting address to text", e);
+                    return Optional.empty();
+                }
+            });
+        };
+    }
+
     /**
      * @return ED 25519 public key embedded in signature part of DataSignature (CIP-30).
      * Returns null in case CIP-30 DataSignature is invalid.
@@ -203,7 +219,7 @@ public class Cip30VerificationResult {
      * @param c the wanted charset
      * @return the formatted public key or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public String getEd25519PublicKey(Format f, Charset c) {
+    public String getEd25519PublicKey(MessageFormat f, Charset c) {
         return formatter(ed25519PublicKey, f, c);
     }
 
@@ -216,7 +232,7 @@ public class Cip30VerificationResult {
      * @param f The encoding format wanted for the returned Ed25519 public key.
      * @return the Ed25519 public key or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public @Nullable String getEd25519PublicKey(Format f) {
+    public @Nullable String getEd25519PublicKey(MessageFormat f) {
         return getEd25519PublicKey(f, UTF_8);
     }
 
@@ -230,7 +246,7 @@ public class Cip30VerificationResult {
      * @param c the wanted charset
      * @return the formatted Ed25519 signature or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public @Nullable String getEd25519Signature(Format f, Charset c) {
+    public @Nullable String getEd25519Signature(MessageFormat f, Charset c) {
         return formatter(ed25519Signature, f, c);
     }
 
@@ -244,7 +260,7 @@ public class Cip30VerificationResult {
      * @param f the encoding format wanted for the returned signature.
      * @return the formatted Ed25519 signature or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public @Nullable String getEd25519Signature(Format f) {
+    public @Nullable String getEd25519Signature(MessageFormat f) {
         return getEd25519Signature(f, UTF_8);
     }
 
@@ -258,7 +274,7 @@ public class Cip30VerificationResult {
      * @param c The charset wanted for the returned message.
      * @return the formatted message or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public @Nullable String getMessage(Format f, Charset c) {
+    public @Nullable String getMessage(MessageFormat f, Charset c) {
         return formatter(message, f, c);
     }
 
@@ -271,7 +287,7 @@ public class Cip30VerificationResult {
      * @param f The encoding format wanted for the returned message.
      * @return the formatted message or null if CIP-30 DataSignature parsing / validation failed.
      */
-    public @Nullable String getMessage(Format f) {
+    public @Nullable String getMessage(MessageFormat f) {
         return getMessage(f, UTF_8);
     }
 
@@ -284,7 +300,7 @@ public class Cip30VerificationResult {
      * @param f The encoding format wanted for the returned cose payload.
      * @return the COSE payload in the provided encoding format.
      */
-    public @Nullable String getCosePayload(Format f) {
+    public @Nullable String getCosePayload(MessageFormat f) {
         return getCosePayload(f, UTF_8);
     }
 
@@ -298,7 +314,7 @@ public class Cip30VerificationResult {
      * @param c The charset wanted for the returned cose payload.
      * @return the COSE payload in the provided encoding format and charset.
      */
-    public @Nullable String getCosePayload(Format f, Charset c) {
+    public @Nullable String getCosePayload(MessageFormat f, Charset c) {
         return formatter(cosePayload, f, c);
     }
 
@@ -330,7 +346,7 @@ public class Cip30VerificationResult {
      * @return array of bytes provided transformed to the encoding and format and
      * charset specified.
      */
-    private String formatter(byte[] bytes, Format f, Charset c) {
+    private String formatter(byte[] bytes, MessageFormat f, Charset c) {
         if (bytes == null) {
             return null;
         }
@@ -342,7 +358,7 @@ public class Cip30VerificationResult {
         }
 
         return switch (f) {
-            case HEX -> to(bytes);
+            case HEX -> HexUtil.encodeHexString(bytes);
             case TEXT -> new String(bytes, c);
             case BASE64 -> Base64.getEncoder().encodeToString(bytes);
         };

@@ -1,19 +1,18 @@
 package org.cardanofoundation.cip30;
 
-import com.bloxbean.cardano.client.exception.AddressExcepion;
 import org.junit.jupiter.api.Test;
 
-import static com.bloxbean.cardano.client.address.util.AddressUtil.bytesToAddress;
+import static com.bloxbean.cardano.client.util.HexUtil.decodeHexString;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.cardanofoundation.cip30.Format.*;
-import static org.cardanofoundation.cip30.MoreHex.from;
+import static org.cardanofoundation.cip30.MessageFormat.BASE64;
+import static org.cardanofoundation.cip30.MessageFormat.HEX;
 import static org.cardanofoundation.cip30.ValidationError.NO_PUBLIC_KEY;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CIP30VerifierTest {
 
     @Test
-    void validSignatureWithAddressAndPublicKey() throws AddressExcepion {
+    void validSignatureWithAddressAndPublicKey() {
         var sig = "84582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6a166686173686564f4565468697320697320612074657374206d657373616765584042e2bfc4e1929769a0501b884f66794ae3485860f42c01b70fac37f75e40af074c6b2a61b04c6cf8a493c0dced1455b4f1129dbf653ad9801c52ce49ff6d5a0e";
         var key = "a40101032720062158202f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4";
 
@@ -25,20 +24,20 @@ class CIP30VerifierTest {
 
         assertTrue(result.getAddress().isPresent(), "Optional address is included in the signature...");
 
-        assertArrayEquals(from("e1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6"), result.getAddress().orElseThrow());
+        assertArrayEquals(decodeHexString("e1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6"), result.getAddress().orElseThrow());
         assertEquals(sig, p.getCOSESign1());
         assertEquals(key, p.getCoseKey().orElseThrow());
 
-        assertArrayEquals(from("2f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4"), result.getEd25519PublicKey());
-        assertArrayEquals(from("42e2bfc4e1929769a0501b884f66794ae3485860f42c01b70fac37f75e40af074c6b2a61b04c6cf8a493c0dced1455b4f1129dbf653ad9801c52ce49ff6d5a0e"), result.getEd25519Signature());
-        assertArrayEquals(from("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765"), result.getCosePayload());
+        assertArrayEquals(decodeHexString("2f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4"), result.getEd25519PublicKey());
+        assertArrayEquals(decodeHexString("42e2bfc4e1929769a0501b884f66794ae3485860f42c01b70fac37f75e40af074c6b2a61b04c6cf8a493c0dced1455b4f1129dbf653ad9801c52ce49ff6d5a0e"), result.getEd25519Signature());
+        assertArrayEquals(decodeHexString("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765"), result.getCosePayload());
 
-        assertEquals("stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k", bytesToAddress(result.getAddress().orElseThrow()));
+        assertEquals("stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k", result.getAddress(AddressFormat.TEXT).orElseThrow());
 
         assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX));
         assertEquals("5468697320697320612074657374206d657373616765", result.getMessage(HEX));
         assertEquals("VGhpcyBpcyBhIHRlc3QgbWVzc2FnZQ==", result.getMessage(BASE64));
-        assertEquals("This is a test message", result.getMessage(TEXT));
+        assertEquals("This is a test message", result.getMessage(MessageFormat.TEXT));
 
         assertEquals("2f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4", result.getEd25519PublicKey(HEX));
         assertEquals("846a5369676e617475726531582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d640565468697320697320612074657374206d657373616765", result.getCosePayload(HEX));
@@ -54,7 +53,7 @@ class CIP30VerifierTest {
 
         assertTrue(result.isValid());
         assertTrue(result.getAddress().isEmpty(), "address is NOT baked in (serialised in CIP-30).");
-        assertEquals("This is a test message", result.getMessage(TEXT));
+        assertEquals("This is a test message", result.getMessage(MessageFormat.TEXT));
 
         assertEquals("52b92d51dc638d085f8663103d5509f0da29bbee418d75f1f2dc7025d69c9643", result.getEd25519PublicKey(HEX));
 
@@ -78,7 +77,7 @@ class CIP30VerifierTest {
     }
 
     @Test
-    void validSignatureWitPublicKeyWithEmptyMessage() throws AddressExcepion {
+    void validSignatureWitPublicKeyWithEmptyMessage() {
         var sig = "84582aa201276761646472657373581de01d813fd4ab9c1e5f7a35da16f75c2e664edfb2a127fc17a4a7ebbfeea166686173686564f44058406ad1822a992684ed10c2802f2c689516254511e92559f19d5288df96f05d002c560d02e0130f73fe2c762170b185d9f9193c3e1efec5f599cb99dfee662d4f0e";
         var key = "a4010103272006215820c4821499cef96eda9c00cdd0bfbcd2abf7d09436ad424ac7288653a8b4252014";
 
@@ -87,8 +86,8 @@ class CIP30VerifierTest {
 
         assertTrue(result.isValid());
 
-        assertEquals("", result.getMessage(TEXT), "strict.verify()r, message not available.");
-        assertEquals("stake_test1uqwcz0754wwpuhm6xhdpda6u9enyahaj5ynlc9ay5l4mlms4pyqyg", bytesToAddress(result.getAddress().orElseThrow()));
+        assertEquals("", result.getMessage(MessageFormat.TEXT), "strict.verify()r, message not available.");
+        assertEquals("stake_test1uqwcz0754wwpuhm6xhdpda6u9enyahaj5ynlc9ay5l4mlms4pyqyg", result.getAddress(AddressFormat.TEXT).orElseThrow());
     }
 
     @Test
