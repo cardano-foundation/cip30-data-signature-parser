@@ -8,6 +8,8 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
+import org.cardanofoundation.ext.ccl.Address;
+import org.cardanofoundation.ext.ccl.AddressVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,15 +163,23 @@ public final class CIP30Verifier {
 
             var cosePayload = serialize(signatureArray);
 
-            var isVerified = verifyMessage(
+            var isSignatureVerified = verifyMessage(
                     cosePayload,
                     ed25519SignatureByteString.getBytes(),
                     ed25519PublicKeyBytes
             );
 
+            var maybeAddress = Optional.ofNullable(getED25519PublicKeyFromProtectedHeaders(protectedHeaderMap)).map(Address::new);
+            var maybePubKey = Optional.ofNullable(getED25519PublicKeyFromCoseKey(coseKey));
+
+            var isAddressVerified = true;
+            if (maybeAddress.isPresent() && maybePubKey.isPresent()) {
+                isAddressVerified = AddressVerifier.verifyAddressAgainstPublicKey(maybeAddress.orElseThrow(), maybePubKey.orElseThrow());
+            }
+
             var b = Cip30VerificationResult.Builder.newBuilder();
 
-            if (isVerified) {
+            if (isSignatureVerified && isAddressVerified) {
                 b.valid();
             }
 
@@ -205,7 +215,7 @@ public final class CIP30Verifier {
 
     /**
      * Deserializes ED 25519 public key from supplied COSE_Key.
-     *
+     * <p>
      * Function will first check if ED 25519 public key is available in the COSE_Key header section (-2 index),
      * if not it will extract public key from protectedHeaderMap taken from COSE_Sig1 (4 index).
      *
@@ -215,14 +225,32 @@ public final class CIP30Verifier {
      * contains ED 25519 public key
      */
     private static @Nullable byte[] deserializeED25519PublicKey(Optional<String> coseKey, Map protectedHeaderMap) {
-        return coseKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(-2)).orElseGet(() -> {
-            var publicKeyBS = (ByteString) protectedHeaderMap.get(new UnsignedInteger(4));
-            if (publicKeyBS == null) {
-                return null;
-            }
+        return coseKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(-2))
+                .orElseGet(() -> getED25519PublicKeyFromProtectedHeaders(protectedHeaderMap));
+    }
 
-            return publicKeyBS.getBytes();
-        });
+    /**
+     * Deserialise ED 25519 public key from protected header map.
+     * @param protectedHeaderMap
+     * @return ED 25519 public key
+     */
+    private static @Nullable byte[] getED25519PublicKeyFromProtectedHeaders(Map protectedHeaderMap) {
+        var publicKeyBS = (ByteString) protectedHeaderMap.get(new UnsignedInteger(4));
+        if (publicKeyBS == null) {
+            return null;
+        }
+
+        return publicKeyBS.getBytes();
+    }
+
+    /**
+     * Deserialise ED 25519 public key from COSE_Key.
+     *
+     * @param coseKey
+     * @return
+     */
+    private static byte[] getED25519PublicKeyFromCoseKey(Optional<String> coseKey) {
+        return coseKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(-2)).orElse(null);
     }
 
     /**
