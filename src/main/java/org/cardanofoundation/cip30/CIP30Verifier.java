@@ -3,13 +3,14 @@ package org.cardanofoundation.cip30;
 import co.nstant.in.cbor.CborDecoder;
 import co.nstant.in.cbor.CborException;
 import co.nstant.in.cbor.model.*;
+import com.bloxbean.cardano.client.address.Address;
+import com.bloxbean.cardano.client.cip.cip8.COSEKey;
+import com.bloxbean.cardano.client.util.HexUtil;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
-import org.cardanofoundation.ext.ccl.Address;
-import org.cardanofoundation.ext.ccl.AddressVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +23,12 @@ import java.util.Optional;
 import static co.nstant.in.cbor.CborDecoder.decode;
 import static co.nstant.in.cbor.model.MajorType.ARRAY;
 import static co.nstant.in.cbor.model.MajorType.MAP;
+import static com.bloxbean.cardano.client.address.AddressProvider.verifyAddress;
+import static com.bloxbean.cardano.client.common.cbor.CborSerializationUtil.serialize;
 import static net.i2p.crypto.eddsa.EdDSAEngine.ONE_SHOT_MODE;
 import static net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable.ED_25519;
-import static org.cardanofoundation.cip30.MoreHex.from;
 import static org.cardanofoundation.cip30.ValidationError.CIP8_FORMAT_ERROR;
 import static org.cardanofoundation.cip30.ValidationError.NO_PUBLIC_KEY;
-import static org.cardanofoundation.ext.cbor.MoreCbor.serialize;
-import static org.cardanofoundation.ext.cose.COSEKey.deserialize;
 
 /**
  * The {@code CIP30Verifier} class is used to verify and parse Data Signature part of the Cardano protocol.
@@ -124,7 +124,7 @@ public final class CIP30Verifier {
      */
     public Cip30VerificationResult verify() {
         try {
-            var signatureAsBytes = from(coseSign1);
+            var signatureAsBytes = HexUtil.decodeHexString(coseSign1);
 
             var coseCbor = decode(signatureAsBytes).get(0);
 
@@ -174,7 +174,7 @@ public final class CIP30Verifier {
 
             var isAddressVerified = true;
             if (maybeAddress.isPresent() && maybePubKey.isPresent()) {
-                isAddressVerified = AddressVerifier.verifyAddressAgainstPublicKey(maybeAddress.orElseThrow(), maybePubKey.orElseThrow());
+                isAddressVerified = verifyAddress(maybeAddress.orElseThrow(), maybePubKey.orElseThrow());
             }
 
             var b = Cip30VerificationResult.Builder.newBuilder();
@@ -225,7 +225,7 @@ public final class CIP30Verifier {
      * contains ED 25519 public key
      */
     private static @Nullable byte[] deserializeED25519PublicKey(Optional<String> coseKey, Map protectedHeaderMap) {
-        return coseKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(-2))
+        return coseKey.map(hexString -> COSEKey.deserialize(HexUtil.decodeHexString(hexString)).otherHeaderAsBytes(-2))
                 .orElseGet(() -> getED25519PublicKeyFromProtectedHeaders(protectedHeaderMap));
     }
 
@@ -250,7 +250,7 @@ public final class CIP30Verifier {
      * @return
      */
     private static byte[] getED25519PublicKeyFromCoseKey(Optional<String> coseKey) {
-        return coseKey.map(k -> deserialize(from(k)).otherHeaderAsBytes(-2)).orElse(null);
+        return coseKey.map(hexString -> COSEKey.deserialize(HexUtil.decodeHexString(hexString)).otherHeaderAsBytes(-2)).orElse(null);
     }
 
     /**

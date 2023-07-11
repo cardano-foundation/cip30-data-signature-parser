@@ -7,7 +7,7 @@
     <name>CIP 30 Data Signature Parser and Validator</name>
     <url>https://github.com/cardano-foundation/cip30-data-signature-parser</url>
     <description>Java implementation of Cardano's CIP-30 DataSignature parsing and validation.</description>
-    <version>0.0.8-SNAPSHOT</version>
+    <version>0.0.9-SNAPSHOT</version>
 
     <properties>
         <java.version>17</java.version>
@@ -162,6 +162,75 @@
 <!--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.google.</pattern>
+                                    <shadedPattern>shaded.com.google.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>co.nstant.in.</pattern>
+                                    <shadedPattern>shaded.co.nstant.in.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.bloxbean.</pattern>
+                                    <shadedPattern>shaded.com.bloxbean.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.i2p.crypto.</pattern>
+                                    <shadedPattern>shaded.net.i2p.crypto.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.bouncycastle.</pattern>
+                                    <shadedPattern>shaded.org.bouncycastle.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson.</pattern>
+                                    <shadedPattern>shaded.com.fasterxml.jackson.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.</pattern>
+                                    <shadedPattern>shaded.javax.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.checkerframework.</pattern>
+                                    <shadedPattern>shaded.org.checkerframework.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>edu.umd.cs.findbugs.</pattern>
+                                    <shadedPattern>shaded.edu.umd.cs.findbugs.</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <filters>
+                                <filter>
+                                    <!-- filter out signature files from signed dependencies, else repackaging fails with security ex -->
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.slf4j:slf4j-api</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -185,9 +254,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.75</version>
+            <groupId>com.bloxbean.cardano</groupId>
+            <artifactId>cardano-client-address</artifactId>
+            <version>0.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bloxbean.cardano</groupId>
+            <artifactId>cardano-client-cip8</artifactId>
+            <version>0.4.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
@@ -195,19 +269,14 @@
             <version>4.7.3</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>co.nstant.in</groupId>
-            <artifactId>cbor</artifactId>
-            <version>0.9</version>
-        </dependency>
-        <dependency>
             <groupId>net.i2p.crypto</groupId>
             <artifactId>eddsa</artifactId>
             <version>0.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.5</version>
         </dependency>
 
         <!-- test scope -->
@@ -215,13 +284,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.bloxbean.cardano</groupId>
-            <artifactId>cardano-client-lib</artifactId>
-            <version>0.3.0</version>
             <scope>test</scope>
         </dependency>
 
