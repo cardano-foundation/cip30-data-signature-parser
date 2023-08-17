@@ -7,7 +7,7 @@
     <name>CIP 30 Data Signature Parser and Validator</name>
     <url>https://github.com/cardano-foundation/cip30-data-signature-parser</url>
     <description>Java implementation of Cardano's CIP-30 DataSignature parsing and validation.</description>
-    <version>0.0.9</version>
+    <version>0.0.10-SNAPSHOT</version>
 
     <properties>
         <java.version>17</java.version>
@@ -28,7 +28,7 @@
         <connection>scm:git:https://github.com/cardano-foundation/cip30-data-signature-parser.git</connection>
         <developerConnection>scm:git:https://github.com/cardano-foundation/cip30-data-signature-parser.git</developerConnection>
         <url>https://github.com/cardano-foundation/cip30-data-signature-parser.git</url>
-        <tag>0.0.9</tag>
+        <tag>HEAD</tag>
     </scm>
 
 
