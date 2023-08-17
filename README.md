@@ -20,7 +20,7 @@ In particular this library allows you to get / validate:
 - get stored Cardano address
 - get ED 25519 public key and ED 25519 signature encoded in it
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
-- library is fully compatible with Sundae Swap's governance system, i.e. makes it easy to extract the following fields: (ED 25519 public key and ED 25519 signature as well as COSE payload) 
+- library makes it easy to extract (ED 25519 public key and ED 25519 signature as well as COSE payload) 
 
 ## External
 
@@ -43,7 +43,7 @@ mvn clean package
 <dependency>
     <groupId>org.cardanofoundation</groupId>
     <artifactId>cip30-data-signature-parser</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.8</version>
 </dependency>
 ```
 
@@ -54,21 +54,21 @@ var key = "a40101032720062158202f1867873147cf53c442435723c17e83beeb8e2153851cd73
 
 var verifier = new CIP30Verifier(sig, key);
 
-var result = verifier.verify();
+var verificationResult = verifier.verify();
 
-System.out.println("is valid?: " + result.isValid());
+System.out.println("is valid?: " + verificationResult.isValid());
 
-System.out.println("address: " + com.bloxbean.cardano.client.address.util.AddressUtil.bytesToAddress(result.getAddress().orElseThrow()));
-System.out.println("message: " + result.getMessage(TEXT));
+System.out.println("Optional address(bech32):" + verificationResult.getAddress(AddressFormat.TEXT).orElseThrow());
+
+System.out.println("Message: " + result.getMessage(TEXT));
 ```
 produces
 ```
 is valid?: true
-address: stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k
+Optional address(bech32):: stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k
 message: This is a test message
 ```
 
 # Caveats / Notes
-- to keep dependencies minimal actual Cardano address is stored as byte array (you have to use other libraries, e.g. bloxbean to turn it into hex or bech32 format)
-- parser is strict, meaning it won't be possible to extract / get various fields if a CIP-30 signature is invalid
+- parser is strict, meaning it won't be possible to extract / get various fields if a CIP-30 signature is invalid, alternatively one can develop one with lenient parsing.
 
