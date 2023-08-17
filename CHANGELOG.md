@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.9](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.8...v0.0.9) (2023-08-17)
+
+
+### Features
+
+* switch to new org keys ([cd7f5d3](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/cd7f5d3360a7a851d1fc6f38adf00f15e2be316a))
+
 ## [0.0.8](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/0.0.7...v0.0.8) (2023-08-17)
 
 
