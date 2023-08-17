@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Check GPG version
+        run : gpg --version
+
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
