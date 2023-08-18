@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.10](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.9...v0.0.10) (2023-08-18)
+
+
+### Features
+
+* using organization secrets to perform mvn release ([644712d](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/644712de1ff28d47c7ca0e383c0e8190c0a9e898))
+
 ## [0.0.9](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.8...v0.0.9) (2023-08-17)
 
 
