@@ -25,7 +25,7 @@ In particular this library allows you to get / validate:
 ## External
 
 - [GLOSSARY.md](GLOSSARY.md)
-- [CODE-OF-CONDUCT.md](CODE-OF-CONDUCT.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 
 ## Requirements
