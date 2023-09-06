@@ -124,7 +124,7 @@ public final class CIP30Verifier {
      */
     public Cip30VerificationResult verify() {
         try {
-            var signatureAsBytes = HexUtil.decodeHexString(coseSign1);
+             var signatureAsBytes = HexUtil.decodeHexString(coseSign1);
 
             var coseCbor = decode(signatureAsBytes).get(0);
 
