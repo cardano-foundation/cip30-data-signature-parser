@@ -22,11 +22,12 @@ In particular this library allows you to get / validate:
 - get COSE payload (COSE wrapped message directly signed by the algorithm)
 - library makes it easy to extract (ED 25519 public key and ED 25519 signature as well as COSE payload) 
 
-## External
-
-- [GLOSSARY.md](GLOSSARY.md)
+## Additional Docs
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-
+- [SECURITY.md](SECURITY.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CHANGELOG.md](CHANGELOG.md)
+- [GLOSSARY.md](GLOSSARY.md)
 
 ## Requirements
 Java 17 LTS or greater
