@@ -157,7 +157,7 @@ public final class CIP30Verifier {
 
             var ed25519PublicKeyBytes = deserializeED25519PublicKey(coseKey, protectedHeaderMap);
             if (ed25519PublicKeyBytes == null) {
-                logger.error("No public key found.");
+                logger.warn("No public key found.");
                 return Cip30VerificationResult.createInvalid(NO_PUBLIC_KEY);
             }
 
@@ -169,12 +169,13 @@ public final class CIP30Verifier {
                     ed25519PublicKeyBytes
             );
 
-            var maybeAddress = Optional.ofNullable(getED25519PublicKeyFromProtectedHeaders(protectedHeaderMap)).map(Address::new);
-            var maybePubKey = Optional.ofNullable(getED25519PublicKeyFromCoseKey(coseKey));
+            var pubKey1 = Optional.ofNullable(deserializeCardanoAddressFromHeaderMap(protectedHeaderMap));
+            var pubKey2 = Optional.ofNullable(getED25519PublicKeyFromCoseKey(coseKey));
 
             var isAddressVerified = true;
-            if (maybeAddress.isPresent() && maybePubKey.isPresent()) {
-                isAddressVerified = verifyAddress(maybeAddress.orElseThrow(), maybePubKey.orElseThrow());
+            // check if public key from the signature matches with the public key passed in the coseKey
+            if (pubKey1.isPresent() && pubKey2.isPresent()) {
+                isAddressVerified = verifyAddress(new Address(pubKey1.orElseThrow()), pubKey2.orElseThrow());
             }
 
             var b = Cip30VerificationResult.Builder.newBuilder();
@@ -183,7 +184,7 @@ public final class CIP30Verifier {
                 b.valid();
             }
 
-            deserializeAddressFromHeaderMap(protectedHeaderMap).ifPresent(b::address);
+            Optional.ofNullable(deserializeCardanoAddressFromHeaderMap(protectedHeaderMap)).ifPresent(b::address);
             Optional.ofNullable(messageByteString.getBytes()).map(b::message);
             b.ed25519PublicKey(ed25519PublicKeyBytes);
             b.ed25519Signature(ed25519SignatureByteString.getBytes());
@@ -216,8 +217,8 @@ public final class CIP30Verifier {
     /**
      * Deserializes ED 25519 public key from supplied COSE_Key.
      * <p>
-     * Function will first check if ED 25519 public key is available in the COSE_Key header section (-2 index),
-     * if not it will extract public key from protectedHeaderMap taken from COSE_Sig1 (4 index).
+     * Function will first check if ED 25519 public key is available in the COSE_Key's header section (-2 index),
+     * if not it will extract public key from protectedHeaderMap taken from COSE_Sig1 (address key).
      *
      * @param coseKey - actual COSE_Key from DataSignature field of CIP-30 signData function
      * @param protectedHeaderMap - extracted protected header map from COSE_Sig1
@@ -226,21 +227,7 @@ public final class CIP30Verifier {
      */
     private static @Nullable byte[] deserializeED25519PublicKey(Optional<String> coseKey, Map protectedHeaderMap) {
         return coseKey.map(hexString -> COSEKey.deserialize(HexUtil.decodeHexString(hexString)).otherHeaderAsBytes(-2))
-                .orElseGet(() -> getED25519PublicKeyFromProtectedHeaders(protectedHeaderMap));
-    }
-
-    /**
-     * Deserialise ED 25519 public key from protected header map.
-     * @param protectedHeaderMap
-     * @return ED 25519 public key
-     */
-    private static @Nullable byte[] getED25519PublicKeyFromProtectedHeaders(Map protectedHeaderMap) {
-        var publicKeyBS = (ByteString) protectedHeaderMap.get(new UnsignedInteger(4));
-        if (publicKeyBS == null) {
-            return null;
-        }
-
-        return publicKeyBS.getBytes();
+                .orElseGet(() -> deserializeCardanoAddressFromHeaderMap(protectedHeaderMap));
     }
 
     /**
@@ -249,8 +236,10 @@ public final class CIP30Verifier {
      * @param coseKey
      * @return
      */
+    @Nullable
     private static byte[] getED25519PublicKeyFromCoseKey(Optional<String> coseKey) {
-        return coseKey.map(hexString -> COSEKey.deserialize(HexUtil.decodeHexString(hexString)).otherHeaderAsBytes(-2)).orElse(null);
+        return coseKey.map(hexString -> COSEKey.deserialize(HexUtil.decodeHexString(hexString)).otherHeaderAsBytes(-2))
+                .orElse(null);
     }
 
     /**
@@ -260,10 +249,11 @@ public final class CIP30Verifier {
      * @return an optional array of bytes containing the deserialized address if there is one,
      * otherwise an empty optional.
      */
-    private static Optional<byte[]> deserializeAddressFromHeaderMap(Map protectedHeaderMap) {
+    private static @Nullable byte[] deserializeCardanoAddressFromHeaderMap(Map protectedHeaderMap) {
         return Optional.ofNullable((ByteString) protectedHeaderMap.get(new UnicodeString("address")))
                 .filter(byteString -> byteString.getBytes().length > 0)
-                .map(ByteString::getBytes);
+                .map(ByteString::getBytes)
+                .orElse(null);
     }
 
 }
