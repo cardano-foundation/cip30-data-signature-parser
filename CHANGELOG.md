@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.11](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.10...v0.0.11) (2023-09-30)
+
+
+### Bug Fixes
+
+* do not deserialise data from an optional field KID4 (in protected headers) ([#23](https://github.com/cardano-foundation/cip30-data-signature-parser/issues/23)) ([f784871](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/f784871ba86f3e3b0bd658a2abe4bbf65fd641e7))
+
 ## [0.0.10](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.9...v0.0.10) (2023-08-18)
 
 
