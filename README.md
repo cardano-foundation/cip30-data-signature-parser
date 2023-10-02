@@ -44,7 +44,7 @@ mvn clean package
 <dependency>
     <groupId>org.cardanofoundation</groupId>
     <artifactId>cip30-data-signature-parser</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11</version>
 </dependency>
 ```
 
