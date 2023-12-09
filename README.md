@@ -59,15 +59,15 @@ var verificationResult = verifier.verify();
 
 System.out.println("is valid?: " + verificationResult.isValid());
 
-System.out.println("Optional address(bech32):" + verificationResult.getAddress(AddressFormat.TEXT).orElseThrow());
+System.out.println("Optional address(bech32): " + verificationResult.getAddress(AddressFormat.TEXT).orElseThrow());
 
 System.out.println("Message: " + result.getMessage(TEXT));
 ```
 produces
 ```
 is valid?: true
-Optional address(bech32):: stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k
-message: This is a test message
+Optional address(bech32): stake1uxur40ehpg2gwr7l6mxtxhut8e32drjxtmg7p9k95m6mn4s0tdy6k
+Message: This is a test message
 ```
 
 # Caveats / Notes
