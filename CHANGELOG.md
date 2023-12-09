@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.12](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.11...v0.0.12) (2023-12-09)
+
+
+### Documentation
+
+* typo fixes ([4658e65](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/4658e65bd96fad2812f87a0a496cc1c9f7f4fc10))
+
 ## [0.0.11](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.10...v0.0.11) (2023-09-30)
 
 
