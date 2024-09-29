@@ -50,6 +50,11 @@ public class Cip30VerificationResult {
      */
     private byte[] cosePayload;
 
+    /**
+     * whether body of the message is hashed rather than full body
+     */
+    private boolean isHashed;
+
     public static class Builder {
 
 
@@ -64,6 +69,8 @@ public class Cip30VerificationResult {
         private byte[] message;
 
         private byte[] cosePayload;
+
+        private boolean isHashed;
 
         /**
          * Creates an object {@code Builder} in charge of building the class
@@ -114,6 +121,11 @@ public class Cip30VerificationResult {
             return Builder.this;
         }
 
+        public Builder isHashed(boolean isHashed) {
+            this.isHashed = isHashed;
+            return Builder.this;
+        }
+
         /**
          * Creates an instance of the class {@code Cip30VerificationResult} using the information
          * stored.
@@ -135,6 +147,7 @@ public class Cip30VerificationResult {
         this.ed25519Signature = builder.ed25519Signature;
         this.message = builder.message;
         this.cosePayload = builder.cosePayload;
+        this.isHashed = builder.isHashed;
     }
 
     /**
@@ -207,6 +220,14 @@ public class Cip30VerificationResult {
      */
     public @Nullable byte[] getCosePayload() {
         return cosePayload;
+    }
+
+    /**
+     * return whether body is hashed or not (e.g. hardware wallet scenario)
+     * @return
+     */
+    public boolean isHashed() {
+        return isHashed;
     }
 
     /**
@@ -380,6 +401,7 @@ public class Cip30VerificationResult {
                 ", ed25519Signature=" + ed25519Signature +
                 ", message=" + message +
                 ", cosePayload=" + cosePayload +
+                ", isHashed=" + isHashed +
                 '}';
     }
 
