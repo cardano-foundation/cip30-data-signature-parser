@@ -136,6 +136,15 @@ public final class CIP30Verifier {
             var dataItems = ((Array) coseCbor).getDataItems();
             var protectedHeader = (ByteString) dataItems.get(0); // 1
 
+            var unprotectedHeaderMap = (Map) dataItems.get(1); // 2
+
+            if (unprotectedHeaderMap.getMajorType() != MAP) {
+                logger.error("Invalid CIP-30 signature. unprotected header structure is not a map.");
+                return Cip30VerificationResult.createInvalid(CIP8_FORMAT_ERROR);
+            }
+
+            var isHashed = unprotectedHeaderMap.get(new UnicodeString("hashed")) == SimpleValue.TRUE;
+
             var messageByteString = (ByteString) dataItems.get(2); // 3
 
             var ed25519SignatureByteString = (ByteString) dataItems.get(3); // 4
@@ -179,6 +188,7 @@ public final class CIP30Verifier {
             }
 
             var b = Cip30VerificationResult.Builder.newBuilder();
+            b.isHashed(isHashed);
 
             if (isSignatureVerified && isAddressVerified) {
                 b.valid();
