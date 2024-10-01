@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.12](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.11...v0.0.12) (2024-10-01)
+
+
+### Features
+
+* added support for unprotected header section, e.g. hashed: true that is needed for hardware wallets. ([#27](https://github.com/cardano-foundation/cip30-data-signature-parser/issues/27)) ([98ba9f6](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/98ba9f66a1a0bf47d512997973763a790042f18e))
+
+
+### Documentation
+
+* typo fixes ([4658e65](https://github.com/cardano-foundation/cip30-data-signature-parser/commit/4658e65bd96fad2812f87a0a496cc1c9f7f4fc10))
+
 ## [0.0.11](https://github.com/cardano-foundation/cip30-data-signature-parser/compare/v0.0.10...v0.0.11) (2023-09-30)
 
 
