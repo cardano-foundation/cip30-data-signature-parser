@@ -1,5 +1,7 @@
 package org.cardanofoundation.cip30;
 
+import com.bloxbean.cardano.client.crypto.Blake2bUtil;
+import com.bloxbean.cardano.client.util.HexUtil;
 import org.junit.jupiter.api.Test;
 
 import static com.bloxbean.cardano.client.util.HexUtil.decodeHexString;
@@ -204,6 +206,29 @@ class CIP30VerifierTest {
         assertEquals("stake1uypayp2nyzy66tmcz6yjuth59pym0df83rjpk0758fhqrncq8vcdz", result.getAddress(AddressFormat.TEXT).orElseThrow());
         assertEquals("1c1afc33a1ed48205eadcbbda2fc8e61442af2e04673616f21b7d038", result.getMessage(HEX));
         assertTrue(result.isHashed());
+    }
+
+    @Test
+    // hardware wallet, e.g. ledger with external payload check
+    void signatureWithHashedWithPayload() {
+        var sig = "84582aa201276761646472657373581de0e1bdbfc0b500c4356adcd27ebedee1fdeba0206e5a77fb2f73dee1bda166686173686564f5581ccd197892c9f088d3fa45ceacab6e102629e40b7daa59ee89a583188058409aa83c7513b5bcfa12ddd7dabd33e338b6cbd17cbda70f6dcdd5577e9ed8e01a76f8d8321c2d5f5446c60a65c0ae3a6e0f91933cd1cd92d83ea506db7829510b";
+        var payload = "{\"action\":\"CAST_VOTE\",\"actionText\":\"Cast Vote\",\"data\":{\"category\":\"INFRASTRUCTURE_PLATFORM\",\"event\":\"CF_SUMMIT_2025_26BCC\",\"id\":\"3d92b7c0-0f15-4b44-b630-9587d589bc9b\",\"network\":\"PREPROD\",\"proposal\":\"1C70E403-E1E9-4825-8246-8A2EB39E4F69\",\"votedAt\":\"103121738\",\"votingEventType\":\"USER_BASED\",\"walletId\":\"stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0\",\"walletType\":\"CARDANO\"},\"slot\":\"103121738\"}";
+        var key = "a40101032720062158200d8a01827dabd66f477d54f30d506e38f4ef9687f21faa49d7e35e750c43f105";
+
+        var cip30Verifier = new CIP30Verifier(sig, key);
+
+        var result = cip30Verifier.verify();
+
+        assertTrue(result.isValid());
+        var payloadHash = result.getMessage(HEX);
+
+        assertEquals("stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0", result.getAddress(AddressFormat.TEXT).orElseThrow());
+        assertEquals("cd197892c9f088d3fa45ceacab6e102629e40b7daa59ee89a5831880", payloadHash);
+        assertTrue(result.isHashed());
+
+        var hashedPayload = HexUtil.encodeHexString(Blake2bUtil.blake2bHash224(payload.getBytes(UTF_8)));
+
+        assertEquals(payloadHash, hashedPayload, "hash over external payload must match with hash in the signature");
     }
 
 }
