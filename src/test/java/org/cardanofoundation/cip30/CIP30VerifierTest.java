@@ -228,7 +228,87 @@ class CIP30VerifierTest {
 
         var hashedPayload = HexUtil.encodeHexString(Blake2bUtil.blake2bHash224(payload.getBytes(UTF_8)));
 
-        assertEquals(payloadHash, hashedPayload, "hash over external payload must match with hash in the signature");
+        assertEquals(payloadHash, hashedPayload, "hash over external payload MUST match with hash in the signature");
+
+        // Test the new helper method
+        assertTrue(result.verifyPayload(payload), "verifyPayload should return true for matching payload");
+    }
+
+    @Test
+        // hardware wallet, e.g. ledger with external payload check
+    void signatureWithHashedWithPayloadWithInvalidPayload() {
+        var sig = "84582aa201276761646472657373581de0e1bdbfc0b500c4356adcd27ebedee1fdeba0206e5a77fb2f73dee1bda166686173686564f5581ccd197892c9f088d3fa45ceacab6e102629e40b7daa59ee89a583188058409aa83c7513b5bcfa12ddd7dabd33e338b6cbd17cbda70f6dcdd5577e9ed8e01a76f8d8321c2d5f5446c60a65c0ae3a6e0f91933cd1cd92d83ea506db7829510b";
+        var payload = "{\"action\":\"CAST_VOTE\",\"actionText\":\"Cast Vote\",\"data\":{\"category\":\"INFRASTRUCTURE_PLATFORM\",\"event\":\"CF_SUMMIT_2025_26BCC\",\"id\":\"1d92b7c0-0f15-4b44-b630-9587d589bc9b\",\"network\":\"PREPROD\",\"proposal\":\"1C70E403-E1E9-4825-8246-8A2EB39E4F69\",\"votedAt\":\"103121738\",\"votingEventType\":\"USER_BASED\",\"walletId\":\"stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0\",\"walletType\":\"CARDANO\"},\"slot\":\"103121738\"}";
+        var key = "a40101032720062158200d8a01827dabd66f477d54f30d506e38f4ef9687f21faa49d7e35e750c43f105";
+
+        var cip30Verifier = new CIP30Verifier(sig, key);
+
+        var result = cip30Verifier.verify();
+
+        assertTrue(result.isValid());
+        var payloadHash = result.getMessage(HEX);
+
+        assertEquals("stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0", result.getAddress(AddressFormat.TEXT).orElseThrow());
+        assertEquals("cd197892c9f088d3fa45ceacab6e102629e40b7daa59ee89a5831880", payloadHash);
+        assertTrue(result.isHashed());
+
+        var hashedPayload = HexUtil.encodeHexString(Blake2bUtil.blake2bHash224(payload.getBytes(UTF_8)));
+
+        assertNotEquals(payloadHash, hashedPayload, "hash over external payload MUST NOT match with hash in the signature");
+
+        assertFalse(result.verifyPayload(payload), "verifyPayload should return true for matching payload");
+    }
+
+    @Test
+    void verifyPayloadWithHashedContent() {
+        // Use the existing hashed signature test data
+        var sig = "84582aa201276761646472657373581de0e1bdbfc0b500c4356adcd27ebedee1fdeba0206e5a77fb2f73dee1bda166686173686564f5581ccd197892c9f088d3fa45ceacab6e102629e40b7daa59ee89a583188058409aa83c7513b5bcfa12ddd7dabd33e338b6cbd17cbda70f6dcdd5577e9ed8e01a76f8d8321c2d5f5446c60a65c0ae3a6e0f91933cd1cd92d83ea506db7829510b";
+        var correctPayload = "{\"action\":\"CAST_VOTE\",\"actionText\":\"Cast Vote\",\"data\":{\"category\":\"INFRASTRUCTURE_PLATFORM\",\"event\":\"CF_SUMMIT_2025_26BCC\",\"id\":\"3d92b7c0-0f15-4b44-b630-9587d589bc9b\",\"network\":\"PREPROD\",\"proposal\":\"1C70E403-E1E9-4825-8246-8A2EB39E4F69\",\"votedAt\":\"103121738\",\"votingEventType\":\"USER_BASED\",\"walletId\":\"stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0\",\"walletType\":\"CARDANO\"},\"slot\":\"103121738\"}";
+        var incorrectPayload = "{\"action\":\"CAST_VOTE\",\"actionText\":\"Cast Vote\",\"data\":{\"category\":\"INFRASTRUCTURE_PLATFORM\",\"event\":\"CF_SUMMIT_2025_26BCC\",\"id\":\"WRONG_ID\",\"network\":\"PREPROD\",\"proposal\":\"1C70E403-E1E9-4825-8246-8A2EB39E4F69\",\"votedAt\":\"103121738\",\"votingEventType\":\"USER_BASED\",\"walletId\":\"stake_test1ursmm07qk5qvgdt2mnf8a0k7u877hgpqded807e0w00wr0glrmpz0\",\"walletType\":\"CARDANO\"},\"slot\":\"103121738\"}";
+        var key = "a40101032720062158200d8a01827dabd66f477d54f30d506e38f4ef9687f21faa49d7e35e750c43f105";
+
+        var cip30Verifier = new CIP30Verifier(sig, key);
+        var result = cip30Verifier.verify();
+
+        assertTrue(result.isValid());
+        assertTrue(result.isHashed());
+
+        // Test with correct payload (should match after hashing)
+        assertTrue(result.verifyPayload(correctPayload), "verifyPayload should return true for correct hashed payload");
+
+        // Test with incorrect payload (should not match after hashing)
+        assertFalse(result.verifyPayload(incorrectPayload), "verifyPayload should return false for incorrect hashed payload");
+
+        // Test error cases
+        assertThrows(NullPointerException.class, () -> result.verifyPayload(null));
+    }
+
+    @Test
+    void verifyPayloadWithUnhashedContent() {
+        // Use the existing unhashed signature test data
+        var sig = "84582aa201276761646472657373581de1b83abf370a14870fdfd6ccb35f8b3e62a68e465ed1e096c5a6f5b9d6a166686173686564f4565468697320697320612074657374206d657373616765584042e2bfc4e1929769a0501b884f66794ae3485860f42c01b70fac37f75e40af074c6b2a61b04c6cf8a493c0dced1455b4f1129dbf653ad9801c52ce49ff6d5a0e";
+        var correctPayload = "This is a test message";
+        var incorrectPayload = "This is a wrong message";
+        var key = "a40101032720062158202f1867873147cf53c442435723c17e83beeb8e2153851cd73ccfb1b5e68994a4";
+
+        var cip30Verifier = new CIP30Verifier(sig, key);
+        var result = cip30Verifier.verify();
+
+        assertTrue(result.isValid());
+        assertFalse(result.isHashed());
+
+        // Test with correct payload (should match directly)
+        assertTrue(result.verifyPayload(correctPayload), "verifyPayload should return true for correct unhashed payload");
+
+        // Test with incorrect payload (should not match directly)
+        assertFalse(result.verifyPayload(incorrectPayload), "verifyPayload should return false for incorrect unhashed payload");
+
+        // Test error cases
+        assertThrows(NullPointerException.class, () -> result.verifyPayload(null));
+
+        // Test with invalid result
+        var invalidResult = Cip30VerificationResult.createInvalid(UNKNOWN);
+        assertThrows(IllegalStateException.class, () -> invalidResult.verifyPayload("any payload"));
     }
 
 }

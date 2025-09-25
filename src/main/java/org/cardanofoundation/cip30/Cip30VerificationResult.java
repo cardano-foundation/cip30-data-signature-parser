@@ -1,6 +1,7 @@
 package org.cardanofoundation.cip30;
 
 import com.bloxbean.cardano.client.address.util.AddressUtil;
+import com.bloxbean.cardano.client.crypto.Blake2bUtil;
 import com.bloxbean.cardano.client.exception.AddressExcepion;
 import com.bloxbean.cardano.client.util.HexUtil;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
@@ -383,6 +385,37 @@ public class Cip30VerificationResult {
             case TEXT -> new String(bytes, c);
             case BASE64 -> Base64.getEncoder().encodeToString(bytes);
         };
+    }
+
+    /**
+     * Verifies if the provided payload matches the message in this signature.
+     * <p>
+     * If the signature contains hashed content (hardware wallet scenario), this method
+     * will hash the payload using Blake2b-224 and compare it with the message hash.
+     * If the signature contains unhashed content, it will compare the payload directly
+     * with the message.
+     *
+     * @param payload the payload to verify against this signature's message
+     * @return true if the payload matches the message, false otherwise
+     * @throws NullPointerException if payload is null
+     * @throws IllegalStateException if the signature is invalid (message is null)
+     */
+    public boolean verifyPayload(String payload) {
+        Objects.requireNonNull(payload, "payload cannot be null");
+
+        if (message == null) {
+            throw new IllegalStateException("Cannot verify payload: signature is invalid (message is null)");
+        }
+
+        if (isHashed) {
+            // For hashed content, hash the payload and compare with message
+            byte[] hashedPayload = Blake2bUtil.blake2bHash224(payload.getBytes(UTF_8));
+            return Arrays.equals(message, hashedPayload);
+        } else {
+            // For unhashed content, compare payload directly with message
+            byte[] payloadBytes = payload.getBytes(UTF_8);
+            return Arrays.equals(message, payloadBytes);
+        }
     }
 
     /**
